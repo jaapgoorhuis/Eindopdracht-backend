@@ -1,6 +1,7 @@
 package com.example.Eindopdracht.service;
 import com.example.Eindopdracht.dto.CarPartDto;
 import com.example.Eindopdracht.dto.CarPartInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.model.CarPart;
 import com.example.Eindopdracht.repository.CarPartRepository;
@@ -20,21 +21,31 @@ public class CarPartService {
     }
 
     public CarPartDto createCarPart(CarPartInputDto dto) {
-        CarPart carPart = transferToCarPart(dto);
-        carPartRepos.save(carPart);
-        return transferToDto(carPart);
+        if(carPartRepos.existsBySerialnumber(dto.getSerialnumber())) {
+            throw new DuplicatedEntryException("serial number already exists");
+        }else {
+            CarPart carPart = transferToCarPart(dto);
+            carPartRepos.save(carPart);
+            return transferToDto(carPart);
+        }
     }
 
     public CarPartDto updateCarPart(Long id, CarPartInputDto dto) {
+
         if(carPartRepos.findById(id).isPresent()) {
+            CarPart existingCarPart = carPartRepos.findCarPartBySerialnumber(dto.getSerialnumber());
             CarPart carPart = carPartRepos.findById(id).get();
 
-            CarPart updatedCarPart = transferToCarPart(dto);
-            updatedCarPart.setId(carPart.getId());
+            if(existingCarPart != null && !existingCarPart.getId().equals(carPart.getId())) {
+                throw new DuplicatedEntryException("Serial number already exists");
+            } else {
+                CarPart updatedCarPart = transferToCarPart(dto);
+                updatedCarPart.setId(carPart.getId());
 
-            carPartRepos.save(updatedCarPart);
+                carPartRepos.save(updatedCarPart);
 
-            return transferToDto(updatedCarPart);
+                return transferToDto(updatedCarPart);
+            }
         } else {
             throw new RecordNotFoundException("no carpart found");
         }
@@ -74,7 +85,7 @@ public class CarPartService {
         CarPartDto dto = new CarPartDto();
         dto.setName(carPart.getName());
         dto.setPrice(carPart.getPrice());
-        dto.setSerial_number(carPart.getSerial_number());
+        dto.setSerialnumber(carPart.getSerialnumber());
         return dto;
     }
 
@@ -82,7 +93,7 @@ public class CarPartService {
         var carPart = new CarPart();
         carPart.setName(dto.getName());
         carPart.setPrice(dto.getPrice());
-        carPart.setSerial_number(dto.getSerial_number());
+        carPart.setSerialnumber(dto.getSerialnumber());
 
         return carPart;
     }

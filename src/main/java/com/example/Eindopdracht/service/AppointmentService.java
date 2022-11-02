@@ -21,12 +21,12 @@ public class AppointmentService {
     }
 
     public AppointmentDto createAppointment(AppointmentInputDto dto) {
-            Appointment appointment = transferToAppointment(dto);
-            appointmentRepos.save(appointment);
-            return transferToDto(appointment);
-        }
+        Appointment appointment = transferToAppointment(dto);
+        appointmentRepos.save(appointment);
+        return transferToDto(appointment);
+    }
 
-    public AppointmentDto updateAppointment(Long id, AppointmentInputDto dto) {
+    public AppointmentDto updateAppointment(AppointmentInputDto dto,Long id) {
         if(appointmentRepos.findById(id).isPresent()) {
             Appointment appointment = appointmentRepos.findById(id).get();
 
@@ -39,6 +39,7 @@ public class AppointmentService {
         } else {
             throw new RecordNotFoundException("no appointment found");
         }
+
     }
 
     public void deleteAppointment(Long id) {
@@ -89,7 +90,7 @@ public class AppointmentService {
 
             return appointment;
         } else {
-            throw new RecordNotFoundException("not found");
+            throw new RecordNotFoundException("car not found");
         }
     }
 }

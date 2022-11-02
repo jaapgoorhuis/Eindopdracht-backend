@@ -39,6 +39,18 @@ public class Car {
         this.brand = brand;
     }
 
+    public Car(Long id, String brand, String licenseplate, Customer customer) {
+        this.customer = customer;
+        this.id = id;
+        this.licenseplate = licenseplate;
+        this.brand = brand;
+    }
+
+    public Car(String brand, String licenseplate) {
+        this.licenseplate = licenseplate;
+        this.brand = brand;
+    }
+
     public Car() {
 
     }

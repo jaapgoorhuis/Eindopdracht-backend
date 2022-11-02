@@ -85,6 +85,4 @@ public class Appointment {
         this.car = car;
     }
 
-
-
 }

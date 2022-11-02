@@ -2,6 +2,7 @@ package com.example.Eindopdracht.service;
 
 import com.example.Eindopdracht.dto.CustomerDto;
 import com.example.Eindopdracht.dto.CustomerInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.model.Car;
 import com.example.Eindopdracht.model.Customer;
@@ -23,42 +24,44 @@ public class CustomerService {
     }
 
     public CustomerDto createCustomer(CustomerInputDto dto) {
-        Customer customer = transferToCustomer(dto);
-        customerRepos.save(customer);
+        if(customerRepos.existsByEmail(dto.getEmail())) {
+            throw new DuplicatedEntryException("customer email already exists");
+        }else {
+            Customer customer = transferToCustomer(dto);
+            customerRepos.save(customer);
 
-        return transferToDto(customer);
+            return transferToDto(customer);
+        }
     }
 
     public CustomerDto updateCustomer(Long id, CustomerInputDto dto) {
         if (customerRepos.findById(id).isPresent()) {
-
             Customer customer = customerRepos.findById(id).get();
 
-            Customer updatedCustomer = transferToCustomer(dto);
-            updatedCustomer.setId(customer.getId());
+            Customer existingCustomer = customerRepos.findCustomerByEmail(dto.getEmail());
 
-            customerRepos.save(updatedCustomer);
+            if(existingCustomer != null && !existingCustomer.getId().equals(customer.getId())) {
+                throw new DuplicatedEntryException("Email already exists");
+            } else {
+                Customer updatedCustomer = transferToCustomer(dto);
+                updatedCustomer.setId(customer.getId());
 
-            return transferToDto(updatedCustomer);
-        }
-        else {
+                customerRepos.save(updatedCustomer);
+
+                return transferToDto(updatedCustomer);
+            }
+        } else {
             throw new RecordNotFoundException("No customer found");
         }
     }
 
     public void deleteCustomer(Long id) {
-        if(customerRepos.findById(id).isPresent()) {
-            customerRepos.deleteById(id);
-        }
-        else {
-            throw new RecordNotFoundException("no customer found");
-        }
+        customerRepos.deleteById(id);
     }
 
     public List<CustomerDto> getAllCustomers() {
-
-        List<CustomerDto> customerDtolist = new ArrayList<>();
         List<Customer> customerList = customerRepos.findAll();
+        List<CustomerDto> customerDtolist = new ArrayList<>();
         for (Customer customer : customerList) {
             CustomerDto dto = transferToDto(customer);
             customerDtolist.add(dto);

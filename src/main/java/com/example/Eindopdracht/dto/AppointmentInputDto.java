@@ -1,10 +1,8 @@
 package com.example.Eindopdracht.dto;
 
 import com.example.Eindopdracht.model.Car;
-import com.example.Eindopdracht.model.Customer;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,13 +10,9 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import java.time.LocalDate;
-import java.util.Date;
-
 public class AppointmentInputDto {
 
     public Long id;
-
-    @NotNull
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -27,15 +21,12 @@ public class AppointmentInputDto {
 
     public String notes;
 
-    @NotEmpty
     public String status;
 
-    @NotEmpty
     public String type_appointment;
 
+    @Column(unique = true)
     public Car car;
-
-    public Customer customer;
 
     public AppointmentInputDto(Long id,LocalDate finish_date, String notes, String status, String type_appointment, Car car) {
         this.id = id;
@@ -44,15 +35,6 @@ public class AppointmentInputDto {
         this.status = status;
         this.type_appointment = type_appointment;
         this.car = car;
-    }
-
-    public AppointmentInputDto(LocalDate finish_date, String notes, String status, String type_appointment) {
-
-        this.finish_date = finish_date;
-        this.notes = notes;
-        this.status = status;
-        this.type_appointment = type_appointment;
-
     }
 
     public AppointmentInputDto() {
@@ -65,6 +47,18 @@ public class AppointmentInputDto {
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public void setFinish_date(LocalDate finish_date) {
+        this.finish_date = finish_date;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getFinish_date() {
@@ -87,11 +81,8 @@ public class AppointmentInputDto {
         return car;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Long getId() {
+        return id;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 }

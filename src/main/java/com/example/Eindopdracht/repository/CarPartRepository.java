@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CarPartRepository extends JpaRepository<CarPart, Long> {
+    Boolean existsBySerialnumber(String serialnumber);
+
+    CarPart findCarPartBySerialnumber(String serialnumber);
 }

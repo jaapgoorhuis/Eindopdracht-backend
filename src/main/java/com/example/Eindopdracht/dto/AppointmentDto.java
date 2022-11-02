@@ -1,12 +1,8 @@
 package com.example.Eindopdracht.dto;
 
-import com.example.Eindopdracht.model.Appointment;
 import com.example.Eindopdracht.model.Car;
 
 import java.time.LocalDate;
-import java.util.UUID;
-
-
 
 public class AppointmentDto {
 
@@ -32,7 +28,25 @@ public class AppointmentDto {
         this.car = car;
     }
 
+    public AppointmentDto(LocalDate finish_date, String notes, String status, String type_appointment, Car car) {
+
+        this.finish_date = finish_date;
+        this.notes = notes;
+        this.status = status;
+        this.type_appointment = type_appointment;
+        this.car = car;
+    }
+
+
     public AppointmentDto(){}
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
 
     public void setFinish_date(LocalDate finish_date) {
         this.finish_date = finish_date;
@@ -42,16 +56,8 @@ public class AppointmentDto {
         this.notes = notes;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setType_appointment(String type_appointment) {
-        this.type_appointment = type_appointment;
-    }
-
-    public void setCar(Car car) {
-        this.car = car;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getStatus() {
@@ -62,23 +68,22 @@ public class AppointmentDto {
         return car;
     }
 
-    public String getType_appointment() {
-        return type_appointment;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalDate getFinish_date() {
         return finish_date;
     }
 
     public String getNotes() {
         return notes;
+    }
+    public void setType_appointment(String type_appointment) {
+        this.type_appointment = type_appointment;
+    }
+
+    public String getType_appointment() {
+        return type_appointment;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

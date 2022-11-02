@@ -12,7 +12,7 @@ public class CarPart {
 
     private String name;
 
-    private String serial_number;
+    private String serialnumber;
 
     private float price;
 
@@ -35,12 +35,12 @@ public class CarPart {
         this.name = name;
     }
 
-    public String getSerial_number() {
-        return serial_number;
+    public String getSerialnumber() {
+        return serialnumber;
     }
 
-    public void setSerial_number(String serial_number) {
-        this.serial_number = serial_number;
+    public void setSerialnumber(String serialnumber) {
+        this.serialnumber = serialnumber;
     }
 
     public float getPrice() {

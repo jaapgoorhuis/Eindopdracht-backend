@@ -2,6 +2,7 @@ package com.example.Eindopdracht.service;
 
 import com.example.Eindopdracht.dto.UserDto;
 import com.example.Eindopdracht.dto.UserInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.model.Role;
 import com.example.Eindopdracht.model.User;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,11 +30,15 @@ public class UserService {
         this.roleRepos = roleRepos;
     }
 
-    public UserDto createUser(UserInputDto newUserDto) {
-        User user = transferToUser(newUserDto);
-        userRepos.save(user);
+    public UserDto createUser(UserInputDto newUserDto, Principal principal) {
+        if(userRepos.existsByUsername(newUserDto.getUsername())) {
+            throw new DuplicatedEntryException("Username already exists");
+        }else {
+            User user = transferToUser(newUserDto, principal);
+            userRepos.save(user);
 
-        return transferToDto(user);
+            return transferToDto(user);
+        }
     }
 
     public List<UserDto> getAllUsers() {
@@ -55,17 +61,30 @@ public class UserService {
         }
     }
 
-    public UserDto updateUser(Long id, UserInputDto dto) {
+    public UserDto updateUser(Long id, UserInputDto dto, Principal principal) {
         if (userRepos.findById(id).isPresent()) {
             User user = userRepos.findById(id).get();
-            User updatedUser = transferToUser(dto);
-            updatedUser.setId(user.getId());
-            userRepos.save(updatedUser);
 
-            return transferToDto(updatedUser);
-        }
-        else {
-            throw new RecordNotFoundException("No user found");
+            System.out.println(principal.getName());
+
+            User existingUser = userRepos.findUserByUsername(dto.getUsername());
+
+            if(existingUser != null && !existingUser.getId().equals(user.getId())) {
+                throw new DuplicatedEntryException("Username already exists");
+            } else {
+                if(!principal.getName().equals(user.getUsername())) {
+                    dto.setUsername(dto.getUsername());
+                } else {
+                    dto.setUsername(principal.getName());
+                }
+                User updatedUser = transferToUser(dto,principal);
+                updatedUser.setId(user.getId());
+                userRepos.save(updatedUser);
+
+                return transferToDto(updatedUser);
+            }
+        } else {
+            throw new RecordNotFoundException("No user id found");
         }
     }
 
@@ -89,7 +108,7 @@ public class UserService {
         return dto;
     }
 
-    public User transferToUser(UserInputDto dto) {
+    public User transferToUser(UserInputDto dto, Principal principal) {
         var u = new User();
         u.setFirstname(dto.firstname);
         u.setLastname(dto.lastname);

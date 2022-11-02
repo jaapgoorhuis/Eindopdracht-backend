@@ -2,6 +2,7 @@ package com.example.Eindopdracht.service;
 
 import com.example.Eindopdracht.dto.CarDto;
 import com.example.Eindopdracht.dto.CarInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.model.Car;
 import com.example.Eindopdracht.repository.CarRepository;
@@ -22,39 +23,43 @@ public class CarService {
     }
 
     public CarDto createCar(CarInputDto dto) {
-        Car car = transferToCar(dto);
-        carRepos.save(car);
-        return transferToDto(car);
+        if(carRepos.existsByLicenseplate(dto.getLicenseplate())) {
+            throw new DuplicatedEntryException("Lisense plate already exists");
+        }else {
+            Car car = transferToCar(dto);
+            carRepos.save(car);
+            return transferToDto(car);
+        }
     }
 
     public CarDto updateCar(Long id, CarInputDto dto) {
         if(carRepos.findById(id).isPresent()) {
             Car car = carRepos.findById(id).get();
 
-            Car updatedCar = transferToCar(dto);
-            updatedCar.setId(car.getId());
+            Car existingcar = carRepos.findCarByLicenseplate(dto.getLicenseplate());
 
-            carRepos.save(updatedCar);
+            if(existingcar != null && !existingcar.getId().equals(car.getId())) {
+                throw new DuplicatedEntryException("Lisense plate already exists");
+            } else {
 
-            return transferToDto(updatedCar);
+                Car updatedCar = transferToCar(dto);
+                updatedCar.setId(car.getId());
+                carRepos.save(updatedCar);
+                return transferToDto(updatedCar);
+            }
         } else {
             throw new RecordNotFoundException("no car found");
         }
     }
 
     public void deleteCar(Long id) {
-        if(carRepos.findById(id).isPresent()) {
-            carRepos.deleteById(id);
-
-        } else {
-            throw new RecordNotFoundException("no car found");
-        }
+        carRepos.deleteById(id);
     }
 
     public Collection<CarDto> getAllCars() {
 
-        Collection<CarDto> carDtoList = new HashSet<>();
-        Collection<Car> carList = carRepos.findAll();
+        List<CarDto> carDtoList = new ArrayList<>();
+        List<Car> carList = carRepos.findAll();
         for (Car car : carList) {
             CarDto dto = transferToDto(car);
             carDtoList.add(dto);
@@ -82,17 +87,16 @@ public class CarService {
     }
 
     public Car transferToCar(CarInputDto dto) {
-        var car = new Car();
-        car.setId(dto.getId());
-        car.setBrand(dto.brand);
-        car.setLicenseplate(dto.licenseplate);
-
-        if(customerRepos.existsById(dto.customer.getId())) {
+        if (customerRepos.findById(dto.getCustomer().getId()).isPresent()) {
+            var car = new Car();
+            car.setId(dto.getId());
+            car.setBrand(dto.brand);
+            car.setLicenseplate(dto.licenseplate);
             car.setCustomer(dto.customer);
             return car;
-
-        } else {
-            throw new RecordNotFoundException("No customer found");
+        }
+        else {
+            throw new RecordNotFoundException("Customer not found");
         }
     }
 }

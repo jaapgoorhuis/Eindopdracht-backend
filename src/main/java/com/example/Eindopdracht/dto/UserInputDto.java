@@ -1,28 +1,24 @@
 package com.example.Eindopdracht.dto;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class UserInputDto {
-    @NotEmpty
+
     public String firstname;
 
-    @NotEmpty
     public String lastname;
 
-    @NotEmpty
     @Email
     public String email;
 
-    @NotEmpty
+    @Column(unique = true)
     public String username;
 
-    @NotEmpty
     @Size(min=6, max=20)
     public String password;
 
-    @NotEmpty
     public static Long[] roles;
 
     public String getFirstname() {

@@ -2,6 +2,7 @@ package com.example.Eindopdracht.controller;
 
 import com.example.Eindopdracht.dto.CustomerDto;
 import com.example.Eindopdracht.dto.CustomerInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,12 @@ public class CustomerController {
 
     @PostMapping("customers")
     public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerInputDto dto) {
-        CustomerDto customerData = service.createCustomer(dto);
-        return new ResponseEntity<>(customerData,HttpStatus.OK);
+        try {
+            CustomerDto customerData = service.createCustomer(dto);
+            return new ResponseEntity<>(customerData, HttpStatus.OK);
+        } catch (RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
+        }
     }
 
     @PutMapping("customers/{id}")
@@ -31,8 +36,8 @@ public class CustomerController {
         try {
             CustomerDto dto = service.updateCustomer(id, customerDto);
             return ResponseEntity.ok().body(dto);
-        } catch (RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No customer found");
+        } catch (RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
         }
     }
 

@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
                 .antMatchers("/users/**").hasAuthority("ADMIN")
                 .antMatchers("/customers/**").hasAuthority("ADMIN")
                 .antMatchers("/cars/**").hasAuthority("ADMIN")
-                .antMatchers("/repairactivities/**").hasAuthority("MECHANIC")
+                .antMatchers("/repairactivities/**").hasAnyAuthority("MECHANIC", "ADMIN")
                 .antMatchers("/carparts/**").hasAnyAuthority("MECHANIC","ADMIN")
                 .antMatchers("/appointments/**").hasAnyAuthority("MECHANIC","ADMIN")
                 .antMatchers("/receipt/**").hasAnyAuthority("CASHIER","ADMIN")

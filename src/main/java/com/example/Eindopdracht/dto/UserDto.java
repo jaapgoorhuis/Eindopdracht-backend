@@ -1,9 +1,6 @@
 package com.example.Eindopdracht.dto;
 import com.example.Eindopdracht.model.Role;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.Collection;
 
 public class UserDto {
@@ -59,6 +56,5 @@ public class UserDto {
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.example.Eindopdracht.controller;
 
 import com.example.Eindopdracht.dto.AppointmentDto;
 import com.example.Eindopdracht.dto.AppointmentInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.service.AppointmentService;
 import org.springframework.http.HttpStatus;
@@ -26,18 +27,18 @@ public class AppointmentController {
         try {
             service.createAppointment(dto);
             return ResponseEntity.status(HttpStatus.OK).body(service.createAppointment(dto));
-        } catch(RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car id not found");
+        } catch(RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateAppointment(@PathVariable Long id, @Valid @RequestBody AppointmentInputDto dto) {
         try {
-            AppointmentDto appointment = service.updateAppointment(id, dto);
-            return ResponseEntity.status(HttpStatus.OK).body(appointment);
-        } catch(RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment id not found");
+            AppointmentDto appointment = service.updateAppointment(dto, id);
+            return new ResponseEntity<>(appointment,HttpStatus.OK);
+        } catch(RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
         }
     }
 

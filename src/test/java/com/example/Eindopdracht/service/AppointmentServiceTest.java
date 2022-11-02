@@ -1,6 +1,5 @@
 package com.example.Eindopdracht.service;
 
-import com.example.Eindopdracht.controller.AppointmentController;
 import com.example.Eindopdracht.dto.AppointmentDto;
 import com.example.Eindopdracht.dto.AppointmentInputDto;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
@@ -8,9 +7,7 @@ import com.example.Eindopdracht.model.Appointment;
 import com.example.Eindopdracht.model.Car;
 import com.example.Eindopdracht.repository.AppointmentRepository;
 import com.example.Eindopdracht.repository.CarRepository;
-import com.example.Eindopdracht.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,13 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -35,8 +29,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class AppointmentServiceTest {
-
-    @Autowired
 
     @Mock
     AppointmentRepository appointmentRepository;
@@ -51,7 +43,6 @@ class AppointmentServiceTest {
     ArgumentCaptor<Appointment> argumentCaptor;
 
     Appointment appointment1;
-    AppointmentDto appointmentDto1;
     Appointment appointment2;
 
     Car car1;
@@ -91,7 +82,7 @@ class AppointmentServiceTest {
 
         when(appointmentRepository.save(appointmentService.transferToAppointment(dto))).thenReturn(appointment1);
 
-        appointmentService.updateAppointment(1L, dto);
+        appointmentService.updateAppointment(dto,1L);
 
         verify(appointmentRepository, times(1)).save(argumentCaptor.capture());
 
@@ -101,11 +92,10 @@ class AppointmentServiceTest {
         assertEquals(dto.getNotes(), captured.getNotes());
         assertEquals(dto.getStatus(), captured.getStatus());
         assertEquals(dto.getFinish_date(), captured.getFinish_date());
-
     }
 
     @Test
-    void deleteBook() {
+    void deleteAppointment() {
         appointmentService.deleteAppointment(1L);
 
         verify(appointmentRepository).deleteById(1L);
@@ -143,18 +133,17 @@ class AppointmentServiceTest {
 
     @Test
     void updateAppointmentThrowsExceptionTest() {
-        assertThrows(RecordNotFoundException.class, () -> appointmentService.updateAppointment(1L, new AppointmentInputDto(1L, LocalDate.of(2020,02,02),"test","test","tes",car1)));
+        assertThrows(RecordNotFoundException.class, () -> appointmentService.updateAppointment(new AppointmentInputDto(1L, LocalDate.of(2020,02,02),"test","test","tes",car1), 1L));
     }
 
     @Test
-    void getAuthorThrowsExceptionTest() {
+    void getAppointmentThrowsExceptionTest() {
         assertThrows(RecordNotFoundException.class, () -> appointmentService.getAppointment(null));
     }
 
     @Test
-    void updateAuthorThrowsExceptionForCarTest() {
+    void updateAppointmentsThrowsExceptionForCarTest() {
         when(appointmentRepository.findById(any())).thenReturn(Optional.of(appointment1));
-        assertThrows(RecordNotFoundException.class, () -> appointmentService.updateAppointment(1L, new AppointmentInputDto(1L, LocalDate.of(2020,02,02),"test","test","tes",car1)));
+        assertThrows(RecordNotFoundException.class, () -> appointmentService.updateAppointment(new AppointmentInputDto(1L, LocalDate.of(2020,02,02),"test","test","tes",car1), 1L));
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.Eindopdracht.controller;
 
 import com.example.Eindopdracht.dto.CarDto;
 import com.example.Eindopdracht.dto.CarInputDto;
+import com.example.Eindopdracht.exceptions.DuplicatedEntryException;
 import com.example.Eindopdracht.exceptions.RecordNotFoundException;
 import com.example.Eindopdracht.service.CarService;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,8 @@ public class CarController {
         try {
             CarDto car = service.createCar(dto);
             return new ResponseEntity<>(car, HttpStatus.CREATED);
-        } catch(RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer id not found");
+        } catch(RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
         }
     }
 
@@ -35,8 +36,8 @@ public class CarController {
         try {
             CarDto car = service.updateCar(id, dto);
             return new ResponseEntity<>(car, HttpStatus.CREATED);
-        } catch(RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer id not found");
+        } catch(RecordNotFoundException | DuplicatedEntryException re) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
         }
     }
 

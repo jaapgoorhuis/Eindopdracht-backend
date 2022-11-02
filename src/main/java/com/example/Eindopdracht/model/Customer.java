@@ -5,6 +5,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -14,17 +16,25 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstname;
+    @NotBlank
+    @Email
+    @Column(unique = true)
+    public String email;
 
-    private String lastname;
+    @NotBlank
+    public String firstname;
 
-    private String zipcode;
+    @NotBlank
+    public String lastname;
 
-    private String streetname;
+    @NotBlank
+    public String streetname;
 
-    private String town;
+    @NotBlank
+    public String town;
 
-    private String email;
+    @NotBlank
+    public String zipcode;
 
     @OneToMany(mappedBy = "customer")
     @LazyCollection(LazyCollectionOption.TRUE)

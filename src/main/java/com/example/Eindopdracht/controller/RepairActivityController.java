@@ -27,7 +27,7 @@ public class RepairActivityController {
 
             return new ResponseEntity<>(repairActivityDto, HttpStatus.CREATED);
         } catch (RecordNotFoundException re) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Oeps something went wrong");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(re.getMessage());
         }
     }
 

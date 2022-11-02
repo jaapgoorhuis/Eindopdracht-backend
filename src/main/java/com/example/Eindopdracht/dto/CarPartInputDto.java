@@ -1,17 +1,15 @@
 package com.example.Eindopdracht.dto;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
 
 public class CarPartInputDto {
 
-    @NotNull
     public String name;
 
-    @NotNull
     public float price;
 
-    @NotNull
-    public String serial_number;
+    @Column(unique = true)
+    public String serialnumber;
 
     public void setName(String name) {
         this.name = name;
@@ -25,8 +23,8 @@ public class CarPartInputDto {
         return price;
     }
 
-    public String getSerial_number() {
-        return serial_number;
+    public String getSerialnumber() {
+        return serialnumber;
     }
 
 }

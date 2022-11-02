@@ -1,13 +1,17 @@
 package com.example.Eindopdracht.dto;
 
 import com.example.Eindopdracht.model.Car;
+
+import javax.persistence.Column;
+import javax.validation.constraints.Email;
 import java.util.Collection;
-import java.util.Set;
 
 public class CustomerDto {
 
     public Long id;
 
+    @Email
+    @Column(unique = true)
     public String email;
 
     public String firstname;

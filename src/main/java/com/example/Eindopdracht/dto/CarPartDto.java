@@ -5,7 +5,7 @@ public class CarPartDto {
 
     public float price;
 
-    public String serial_number;
+    public String serialnumber;
 
     public void setName(String name) {
         this.name = name;
@@ -15,8 +15,8 @@ public class CarPartDto {
         this.price = price;
     }
 
-    public void setSerial_number(String serial_number) {
-        this.serial_number = serial_number;
+    public void setSerialnumber(String serialnumber) {
+        this.serialnumber = serialnumber;
     }
 
     public String getName() {

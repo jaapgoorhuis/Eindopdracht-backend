@@ -16,7 +16,8 @@ public class CarDto {
 
     public Set<RepairActivity> repairActivity;
 
-    public CarDto(String brand, String licenseplate) {
+    public CarDto(Long id, String brand, String licenseplate) {
+        this.id = id;
         this.licenseplate = licenseplate;
         this.brand = brand;
     }
@@ -47,5 +48,13 @@ public class CarDto {
 
     public Long getId() {
         return id;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getLicenseplate() {
+        return licenseplate;
     }
 }

@@ -109,7 +109,7 @@ public class RepairActivityService {
             if(or.isPresent()) {
                 RepairActivityCarParts.add(or.get());
             }else {
-                throw new RecordNotFoundException("no car parts found");
+                throw new RecordNotFoundException("not all car parts found");
             }
         }
 

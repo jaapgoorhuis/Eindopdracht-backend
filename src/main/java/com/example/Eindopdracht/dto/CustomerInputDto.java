@@ -2,36 +2,32 @@ package com.example.Eindopdracht.dto;
 
 import com.example.Eindopdracht.model.Car;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 public class CustomerInputDto {
 
     Long id;
 
-    @NotEmpty
     @Email
+    @Column(unique = true)
     public String email;
 
-    @NotEmpty
     public String firstname;
 
-    @NotEmpty
     public String lastname;
 
-    @NotEmpty
     public String streetname;
 
-    @NotEmpty
     public String town;
 
-    @NotEmpty
     public String zipcode;
 
     public Collection<Car> cars;
 
-    public CustomerInputDto(Long id, String email, String firstname, String lastname, String streetname, String town, String zipcode) {
+    public CustomerInputDto(Long id,@NotBlank String email, String firstname, String lastname, String streetname, String town, String zipcode) {
         this.id = id;
         this.email = email;
         this.firstname = firstname;
